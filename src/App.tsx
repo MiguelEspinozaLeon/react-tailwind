@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm, SubmitHandler, set } from "react-hook-form"
 import './App.css'
 import UsersTable from './UsersTable'
+import EditUser from './EditUser'
+import DynamicTable from './DynamicTable'
 
 
 type Inputs = {
@@ -11,6 +13,7 @@ type Inputs = {
   age: number
   username: string
   password: string
+  index?: number
 }
 
 export default function App() {
@@ -18,15 +21,33 @@ export default function App() {
   const [users, setUsers] = useState<Inputs[]>([]);
   const {register, handleSubmit, formState : {errors}} = useForm<Inputs>();
   const [showEdit, setShowEdit] = useState(false);
+  const [editUserId, setEditUserId] = useState(0);
 
   const deleteUser = (index: number) => {
     const updatedUsers = users.filter((user, i) => i !== index);
     setUsers(updatedUsers); 
   }
 
-  const editUser = (index: number) => {
-    const updatedUsers = users.filter((user, i) => i !== index);
-    setUsers(updatedUsers);
+  const onSubmitEdit:SubmitHandler<Inputs> = (data) => {
+    console.log(data);
+    const updatedUser = {
+      firstname: data.firstname,
+      lastname: data.lastname,
+      email: data.email,
+      age: data.age,
+      username : data.username,
+      password: data.password
+    }
+    //
+    setUsers([...users.slice(0, editUserId), updatedUser, ...users.slice(editUserId + 1)]);
+    console.log(users);
+
+    setShowEdit(false);
+  }
+
+  const handleEditClick = (index: number) => {
+    setEditUserId(index);
+    setShowEdit(true);
   }
 
   const onSubmit: SubmitHandler<Inputs> = (data) =>{
@@ -49,6 +70,7 @@ export default function App() {
       
       <div className='container mx-auto shadow-lg max-w-sm rounded overflow-hidden p-8  bg-teal-500'>
         <h1 className='text-blue-600 font-bold py-4'>Form</h1>
+        
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='flex flex-col items-center gap-4'>
               <input defaultValue="John" className='text-cyan-500 px-4 border border-sky-500 rounded-sm' id="firstname" {...register('firstname')} />
@@ -70,11 +92,14 @@ export default function App() {
         </form>
       </div>
       {users.length > 0 && (
-          <UsersTable users={users} deleteUser={deleteUser}/>
+          <UsersTable users={users} deleteUser={deleteUser} handleEditClick={handleEditClick}/>
       )}
-      <div>
-        
-      </div>
+      {showEdit && (
+          <EditUser users={users} user={editUserId} editUser={onSubmitEdit} />
+      )
+      }
+      <DynamicTable />
+      
       
       
     </>

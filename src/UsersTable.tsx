@@ -1,5 +1,3 @@
-import { useState } from "react"
-import { set } from "react-hook-form"
 
 type User = {
     firstname: string
@@ -22,7 +20,7 @@ type User = {
   ]
 
 
-export default function UsersTable({users, deleteUser}:{users: User[], deleteUser: (index: number) => void}){
+export default function UsersTable({users, deleteUser, handleEditClick}:{users: User[], deleteUser: (index: number) => void, handleEditClick: (index: number) => void}){
    
     return (
         <>
@@ -50,7 +48,7 @@ export default function UsersTable({users, deleteUser}:{users: User[], deleteUse
                   <td className='border border-slate-700 p-3'>{user.password}</td>
                   <td className="border border-slate-700 p-3 ">
                     <div className="flex gap-2 items-center">
-                        <button className="rounded p-2 bg-gradient-to-r from-cyan-500 to-blue-500 cursor-pointer">Editar</button>
+                        <button className="rounded p-2 bg-gradient-to-r from-cyan-500 to-blue-500 cursor-pointer" onClick={()=> handleEditClick(index)}>Editar</button>
                         <button className="rounded p-2 bg-gradient-to-r from-red-500 to-red-700 cursor-pointer" onClick={() => deleteUser(index)}>Eliminar</button>
                     </div>
                     
