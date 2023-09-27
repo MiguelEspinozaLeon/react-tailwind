@@ -3,17 +3,31 @@ import { useForm, SubmitHandler, set } from "react-hook-form"
 import './App.css'
 import UsersTable from './UsersTable'
 import EditUser from './EditUser'
-import DynamicTable from './DynamicTable'
+import DynamicUsersTable from './DynamicUsersTable'
+import { supabase } from './supabase'
 
 
 type Inputs = {
+  firstname: string | null
+  lastname: string | null
+  email: string | null
+  age: number | null
+  username: string | null
+  password: string | null
+  id: number 
+  created_at: string 
+ 
+}
+
+type InputsEdit = {
   firstname: string
   lastname: string
   email: string
   age: number
   username: string
   password: string
-  index?: number
+  id: number
+  created_at: string
 }
 
 export default function App() {
@@ -21,6 +35,7 @@ export default function App() {
   const [users, setUsers] = useState<Inputs[]>([]);
   const {register, handleSubmit, formState : {errors}} = useForm<Inputs>();
   const [showEdit, setShowEdit] = useState(false);
+  const [editUser, setEditUser] = useState<InputsEdit>({} as InputsEdit);
   const [editUserId, setEditUserId] = useState(0);
 
   const deleteUser = (index: number) => {
@@ -28,48 +43,40 @@ export default function App() {
     setUsers(updatedUsers); 
   }
 
-  const onSubmitEdit:SubmitHandler<Inputs> = (data) => {
-    console.log(data);
-    const updatedUser = {
-      firstname: data.firstname,
-      lastname: data.lastname,
-      email: data.email,
-      age: data.age,
-      username : data.username,
-      password: data.password
-    }
-    //
-    setUsers([...users.slice(0, editUserId), updatedUser, ...users.slice(editUserId + 1)]);
-    console.log(users);
+  
 
-    setShowEdit(false);
-  }
-
-  const handleEditClick = (index: number) => {
-    setEditUserId(index);
+  const handleEditClick = async (userid: number) => {
+    //const {data, error} = await supabase.from('users').select('*').eq('id', userid);
+    //if(error) console.log(error);
+    //console.log(data)
+    setEditUserId(userid);
+    //if(data)setEditUser(data[0]);
+    
     setShowEdit(true);
   }
+  // make a function to insert rows into supabase table users          
 
-  const onSubmit: SubmitHandler<Inputs> = (data) =>{
-    const user: Inputs = {
-      firstname: data.firstname,
-      lastname: data.lastname,
-      email: data.email,
-      age: data.age,
-      username : data.username,
-      password: data.password
-    }
-    setUsers([...users, user]);
-    
-    
+  //Agregar usuario a la BD
+  const onSubmit: SubmitHandler<Inputs> = async (datos) =>{
+    const  {data, error}  = await supabase.from('users').insert([{ firstname: datos.firstname, lastname: datos.lastname, email: datos.email, age: datos.age, username: datos.username, password: datos.password },]).select()
+    if(error) console.log(error);
+    console.log(data);
+  };
+
+  const onEditSubmit: SubmitHandler<Inputs> = async (datos) =>{
+    const {data, error} = await supabase.from('users').update({firstname: datos.firstname, lastname: datos.lastname, email: datos.email, age: datos.age, username: datos.username, password: datos.password}).eq('id', editUserId ).select();
+    if (error) console.log(error);
+    console.log(data); 
+    setShowEdit(false);
   };
   
 
   return (
     <>
       
-      <div className='container mx-auto shadow-lg max-w-sm rounded overflow-hidden p-8  bg-teal-500'>
-        <h1 className='text-blue-600 font-bold py-4'>Form</h1>
+      <div className='container mx-auto shadow-lg max-w-sm rounded overflow-hidden p-8  bg-teal-500
+      self-center'>
+        <h1 className='text-blue-600 font-bold py-4'>Registrar Usuario</h1>
         
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='flex flex-col items-center gap-4'>
@@ -91,14 +98,14 @@ export default function App() {
           </div>
         </form>
       </div>
-      {users.length > 0 && (
-          <UsersTable users={users} deleteUser={deleteUser} handleEditClick={handleEditClick}/>
-      )}
+      
+         
+      
       {showEdit && (
-          <EditUser users={users} user={editUserId} editUser={onSubmitEdit} />
+          <EditUser userid={editUserId} editUser={onEditSubmit} />
       )
       }
-      <DynamicTable />
+      <DynamicUsersTable edit={handleEditClick}/>
       
       
       
