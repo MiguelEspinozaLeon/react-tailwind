@@ -26,14 +26,15 @@ const tableColumns = [
 
 export default function DynamicUsersTable({edit}: {edit: (userid: number) => void}){
     const [users, setUsers] = useState<User[]>([]);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
         fetchUsers();
-    }, [])
+    }, [users])
 
     async function fetchUsers(){
         try {
-            const {data, error}  = await supabase.from('users').select('*');
+            const {data, error}  = await supabase.from('users').select('*').order('id', {ascending: true});
             if(error) throw error;
             const usersdata: User[] = data;
             setUsers(usersdata);
@@ -45,6 +46,11 @@ export default function DynamicUsersTable({edit}: {edit: (userid: number) => voi
     return (
         <>
         <div className="bg-white container mx-auto shadow-lg rounded p-8 flex flex-col items-center">
+            <p>Search by User</p>  
+            <input defaultValue={search} type="text" className="rounded p-2 border border-gray-300 w-full" placeholder="Search..." onChange={(e)=>{setSearch(e.target.value)}}/>
+            {users.filter((user: User) => {user.firstname === search}).map((user: User) => (
+                <p>{user.firstname}</p>
+            ))}
             <table className='object-fill table-auto border-collapse border border-slate-500 border-spacing-2 w-full text-slate-100 font-sans'>
             <caption className='caption-bottom text-black'>Table 1.0: Users registered in this app.</caption>
                 <thead className="bg-slate-500">
@@ -55,6 +61,7 @@ export default function DynamicUsersTable({edit}: {edit: (userid: number) => voi
                     </tr>
                 </thead>
                 <tbody className="bg-slate-800">
+                    
                     {users.map((user: User) => (
                         <tr key={user.id}>
                             <td className='border border-slate-700 p-3'>{user.id}</td>

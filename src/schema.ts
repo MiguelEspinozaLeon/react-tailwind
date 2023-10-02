@@ -11,34 +11,34 @@ export interface Database {
     Tables: {
       users: {
         Row: {
-          age: number | null
+          age: number
           created_at: string
-          email: string | null
-          firstname: string | null
+          email: string
+          firstname: string
           id: number
-          lastname: string | null
-          password: string | null
-          username: string | null
+          lastname: string
+          password: string
+          username: string
         }
         Insert: {
-          age?: number | null
+          age: number
           created_at?: string
-          email?: string | null
-          firstname?: string | null
+          email: string
+          firstname: string
           id?: number
-          lastname?: string | null
-          password?: string | null
-          username?: string | null
+          lastname: string
+          password: string
+          username: string
         }
         Update: {
-          age?: number | null
+          age?: number
           created_at?: string
-          email?: string | null
-          firstname?: string | null
+          email?: string
+          firstname?: string
           id?: number
-          lastname?: string | null
-          password?: string | null
-          username?: string | null
+          lastname?: string
+          password?: string
+          username?: string
         }
         Relationships: []
       }

@@ -1,21 +1,20 @@
 import { useState } from 'react'
-import { useForm, SubmitHandler, set } from "react-hook-form"
+import { useForm, SubmitHandler} from "react-hook-form"
 import './App.css'
-import UsersTable from './UsersTable'
+
 import EditUser from './EditUser'
 import DynamicUsersTable from './DynamicUsersTable'
 import { supabase } from './supabase'
 
 
 type Inputs = {
-  firstname: string | null
-  lastname: string | null
-  email: string | null
-  age: number | null
-  username: string | null
-  password: string | null
-  id: number 
-  created_at: string 
+  firstname: string
+  lastname: string 
+  email: string 
+  age: number 
+  username: string 
+  password: string
+ 
  
 }
 
@@ -26,8 +25,7 @@ type InputsEdit = {
   age: number
   username: string
   password: string
-  id: number
-  created_at: string
+  
 }
 
 export default function App() {
@@ -38,13 +36,7 @@ export default function App() {
   const [editUser, setEditUser] = useState<InputsEdit>({} as InputsEdit);
   const [editUserId, setEditUserId] = useState(0);
 
-  const deleteUser = (index: number) => {
-    const updatedUsers = users.filter((user, i) => i !== index);
-    setUsers(updatedUsers); 
-  }
-
   
-
   const handleEditClick = async (userid: number) => {
     //const {data, error} = await supabase.from('users').select('*').eq('id', userid);
     //if(error) console.log(error);
@@ -60,15 +52,17 @@ export default function App() {
   const onSubmit: SubmitHandler<Inputs> = async (datos) =>{
     const  {data, error}  = await supabase.from('users').insert([{ firstname: datos.firstname, lastname: datos.lastname, email: datos.email, age: datos.age, username: datos.username, password: datos.password },]).select()
     if(error) console.log(error);
-    console.log(data);
+    setUsers([...users, data?.[0] as Inputs]);
+    
   };
 
-  const onEditSubmit: SubmitHandler<Inputs> = async (datos) =>{
+ /* const onEditSubmit: SubmitHandler<Inputs> = async (datos) =>{
+    console.log('datos a editar', datos)
     const {data, error} = await supabase.from('users').update({firstname: datos.firstname, lastname: datos.lastname, email: datos.email, age: datos.age, username: datos.username, password: datos.password}).eq('id', editUserId ).select();
     if (error) console.log(error);
     console.log(data); 
     setShowEdit(false);
-  };
+  }; */
   
 
   return (
@@ -102,10 +96,10 @@ export default function App() {
          
       
       {showEdit && (
-          <EditUser userid={editUserId} editUser={onEditSubmit} />
+          <EditUser userid={editUserId} />
       )
       }
-      <DynamicUsersTable edit={handleEditClick}/>
+      <DynamicUsersTable  edit={handleEditClick}/>
       
       
       
