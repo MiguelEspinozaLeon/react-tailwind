@@ -12,32 +12,24 @@ type User = {
   }
 
 export default function EditUser({userid}:{userid: number}){
-    const [user, setUser] = useState<User>({} as User);
+    
     const {register, handleSubmit, formState : {errors}} = useForm<User>({defaultValues: async () => {
         const {data, error} = await supabase.from('users').select('*').eq('id', userid);
         
         if(error) console.log(error);
-        const usuario: User = data ? data[0] : {} as User;
-        console.log('usuario', usuario);
+        const user: User = data ? data[0] : {} as User;
+        
         
         return {
-            firstname: usuario.firstname ?? '',
-            lastname: usuario.lastname ?? '',
-            email: usuario.email ?? '',
-            age: usuario.age ?? 0,
-            username: usuario.username ?? '',
-            password: usuario.password ?? ''
+            firstname: user.firstname ?? '',
+            lastname: user.lastname ?? '',
+            email: user.email ?? '',
+            age: user.age ?? 0,
+            username: user.username ?? '',
+            password: user.password ?? ''
         }
     }});
-        
-    
-    
-    
-    
-   /* useEffect(() => {
-        fetchUserToUpdate(userid)
-    }, []); */
-
+  
 
     const onEditSubmit: SubmitHandler<User> = async (datos) =>{
         console.log('datos a editar', datos);
@@ -46,18 +38,7 @@ export default function EditUser({userid}:{userid: number}){
         console.log('data', data);
         
       }; 
-      
-    /*
-    async function fetchUserToUpdate(userid: number){
-        try {
-            const {data, error} = await supabase.from('users').select('*').eq('id', userid);
-            if(error) throw error;
-            setUser(data[0]);
-            console.log('user data',data[0]);
-        } catch (error) {
-            console.log(error);
-        }
-    } */
+   
 
     return (
         <>
@@ -84,16 +65,6 @@ export default function EditUser({userid}:{userid: number}){
                 </div>      
                 </form>
             </div>
-            <ul>
-                <li>{user.age}</li>
-                <li>{user.firstname}</li>
-                
-                <li>{user.lastname}</li>
-                <li>{user.email}</li>
-                <li>{user.username}</li>
-                <li>{user.password}</li>
-            </ul>
-        
         </>
     )
 }

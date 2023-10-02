@@ -5,6 +5,7 @@ import './App.css'
 import EditUser from './EditUser'
 import DynamicUsersTable from './DynamicUsersTable'
 import { supabase } from './supabase'
+import Button from './components/button'
 
 
 type Inputs = {
@@ -33,22 +34,14 @@ export default function App() {
   const [users, setUsers] = useState<Inputs[]>([]);
   const {register, handleSubmit, formState : {errors}} = useForm<Inputs>();
   const [showEdit, setShowEdit] = useState(false);
-  const [editUser, setEditUser] = useState<InputsEdit>({} as InputsEdit);
   const [editUserId, setEditUserId] = useState(0);
 
   
   const handleEditClick = async (userid: number) => {
-    //const {data, error} = await supabase.from('users').select('*').eq('id', userid);
-    //if(error) console.log(error);
-    //console.log(data)
     setEditUserId(userid);
-    //if(data)setEditUser(data[0]);
-    
     setShowEdit(true);
   }
-  // make a function to insert rows into supabase table users          
-
-  //Agregar usuario a la BD
+  
   const onSubmit: SubmitHandler<Inputs> = async (datos) =>{
     const  {data, error}  = await supabase.from('users').insert([{ firstname: datos.firstname, lastname: datos.lastname, email: datos.email, age: datos.age, username: datos.username, password: datos.password },]).select()
     if(error) console.log(error);
@@ -56,19 +49,11 @@ export default function App() {
     
   };
 
- /* const onEditSubmit: SubmitHandler<Inputs> = async (datos) =>{
-    console.log('datos a editar', datos)
-    const {data, error} = await supabase.from('users').update({firstname: datos.firstname, lastname: datos.lastname, email: datos.email, age: datos.age, username: datos.username, password: datos.password}).eq('id', editUserId ).select();
-    if (error) console.log(error);
-    console.log(data); 
-    setShowEdit(false);
-  }; */
-  
 
   return (
     <>
-      
-      <div className='container mx-auto shadow-lg max-w-sm rounded overflow-hidden p-8  bg-teal-500
+    <Button twdclass='bg-teal-500' onclickevent={()=>alert('Hola Mundo')}>Click Me!</Button>
+    <div className='container mx-auto shadow-lg max-w-sm rounded overflow-hidden p-8  bg-teal-500
       self-center'>
         <h1 className='text-blue-600 font-bold py-4'>Registrar Usuario</h1>
         
