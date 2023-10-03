@@ -59,16 +59,16 @@ export default function App() {
         
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='flex flex-col items-center gap-4'>
-              <input defaultValue="John" className='text-cyan-500 px-4 border border-sky-500 rounded-sm' id="firstname" {...register('firstname')} />
-
-              <input defaultValue="Doe" className='text-cyan-500 px-4 border border-sky-500 rounded-sm' id="lastname" {...register('lastname')} />
-
-              <input defaultValue="test@gmail.com" className='text-cyan-500 px-4 border border-sky-500 rounded-sm' id="email" {...register('email')} />
-
-              <input defaultValue={0} className='text-cyan-500 px-4 border border-sky-500 rounded-sm' id="age" {...register('age')} />
-
-              <input defaultValue="username" className='text-cyan-500 px-4 border border-sky-500 rounded-sm' id="username" {...register('username')} />
-
+              <input defaultValue="John" className='text-cyan-500 px-4 border border-sky-500 rounded-sm' id="firstname" {...register('firstname', {required: true})} />
+              {errors.firstname && <span>This field is required</span>}
+              <input defaultValue="Doe" className='text-cyan-500 px-4 border border-sky-500 rounded-sm' id="lastname" {...register('lastname', {required: true})} />
+              {errors.lastname && <span>This field is required</span>}
+              <input defaultValue="test@gmail.com" className='text-cyan-500 px-4 border border-sky-500 rounded-sm' id="email" {...register('email', {required: true})} />
+              {errors.email && <span>This field is required</span>}
+              <input defaultValue={0} className='text-cyan-500 px-4 border border-sky-500 rounded-sm' id="age" {...register('age', {required: true})} />
+              {errors.age && <span>This field is required</span>}
+              <input defaultValue="username" className='text-cyan-500 px-4 border border-sky-500 rounded-sm' id="username" {...register('username', {required: true})} />
+              {errors.username && <span>This field is required</span>}
               <input defaultValue="password" className='text-cyan-500 px-4 border border-sky-500 rounded-sm' id="password" {...register('password', {required: true})} />
               {errors.password && <span>This field is required</span>}
 
