@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react"
 import { supabase } from "./supabase";
 import Button from "./components/button";
+import { Toaster, toast } from "sonner";
 
 
 
 type User = {
     id: number
     created_at: string
-    firstname: string | null
-    lastname: string | null
-    email: string | null
-    age: number | null
-    username: string | null
-    password: string | null
+    firstname: string 
+    lastname: string 
+    email: string 
+    age: number 
+    username: string 
+    password: string 
 }
 
 const tableColumns = [ 
@@ -40,6 +41,17 @@ export default function DynamicUsersTable({edit}: {edit: (userid: number) => voi
             const usersdata: User[] = data;
             setUsers(usersdata);
         } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const deleteUser = async (userid: number) => {
+        try{
+            const {data, error} = await supabase.from('users').delete().match({id: userid});
+            if(error) throw error;
+            
+
+        }catch(error){
             console.log(error);
         }
     }
@@ -73,7 +85,7 @@ export default function DynamicUsersTable({edit}: {edit: (userid: number) => voi
                             <td className='border border-slate-700 p-3'>{user.username}</td>
                             <td className='border border-slate-700 p-3'>
                                 <Button onclickevent={()=>edit(user.id)} twdclass="rounded p-2 bg-gradient-to-r from-cyan-500 to-blue-500 cursor-pointer">Edit</Button>
-                                <button className="rounded p-2 bg-gradient-to-r from-red-500 to-red-700 cursor-pointer">Delete</button>
+                                <button className="rounded p-2 bg-gradient-to-r from-red-500 to-red-700 cursor-pointer" onClick={()=>deleteUser(user.id)}>Delete</button>
                             </td>
                         </tr>
                     ))}

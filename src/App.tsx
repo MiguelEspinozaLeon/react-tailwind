@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useForm, SubmitHandler} from "react-hook-form"
+import { Toaster, toast } from 'sonner'
 import './App.css'
 
 import EditUser from './EditUser'
@@ -45,6 +46,7 @@ export default function App() {
   const onSubmit: SubmitHandler<Inputs> = async (datos) =>{
     const  {data, error}  = await supabase.from('users').insert([{ firstname: datos.firstname, lastname: datos.lastname, email: datos.email, age: datos.age, username: datos.username, password: datos.password },]).select()
     if(error) console.log(error);
+    toast.success('Usuario Registrado');
     setUsers([...users, data?.[0] as Inputs]);
     
   };
@@ -52,7 +54,7 @@ export default function App() {
 
   return (
     <>
-    <Button twdclass='bg-teal-500' onclickevent={()=>alert('Hola Mundo')}>Click Me!</Button>
+    <Toaster richColors position='top-right'/>
     <div className='container mx-auto shadow-lg max-w-sm rounded overflow-hidden p-8  bg-teal-500
       self-center'>
         <h1 className='text-blue-600 font-bold py-4'>Registrar Usuario</h1>
