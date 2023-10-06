@@ -49,8 +49,7 @@ export default function DynamicUsersTable({edit}: {edit: (userid: number) => voi
         try{
             const {data, error} = await supabase.from('users').delete().match({id: userid});
             if(error) throw error;
-            
-
+            toast.success('User deleted');
         }catch(error){
             console.log(error);
         }
@@ -58,6 +57,7 @@ export default function DynamicUsersTable({edit}: {edit: (userid: number) => voi
 
     return (
         <>
+        <Toaster richColors position='top-right'/>
         <div className="bg-white container mx-auto shadow-lg rounded p-8 flex flex-col items-center">
             <p>Search by User</p>  
             <input defaultValue={search} type="text" className="rounded p-2 border border-gray-300 w-full" placeholder="Search..." onChange={(e)=>{setSearch(e.target.value)}}/>
